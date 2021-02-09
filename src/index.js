@@ -19,8 +19,12 @@ export default class MagicUrl {
     this.options = {...defaults, ...options}
     this.urlNormalizer = (url) => this.normalize(url)
     this.mailNormalizer = (mail) => `mailto:${mail}`
-    this.registerTypeListener()
-    this.registerPasteListener()
+    // HACK: Due to wrappers like ngx-quill are 'pasting' the initial
+    // editor content the paste listener is triggered unintentionally
+    window.setTimeout(() => {
+      this.registerTypeListener()
+      this.registerPasteListener()
+    });
   }
   registerPasteListener () {
     this.quill.clipboard.addMatcher(Node.TEXT_NODE, (node, delta) => {
